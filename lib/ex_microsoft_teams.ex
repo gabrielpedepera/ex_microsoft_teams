@@ -3,7 +3,9 @@ defmodule ExMicrosoftTeams do
   Documentation for `ExMicrosoftTeams`.
   """
 
-  alias ExMicrosoftTeams.Impl.HTTPClient
+  @opaque client :: Tesla.Client.t()
+
+  alias ExMicrosoftTeams.Impl.IncomingWebhook
 
   @doc """
   Send a message to a specific channel accordingly the webhook_url
@@ -15,5 +17,15 @@ defmodule ExMicrosoftTeams do
 
   """
   @spec send_message(String.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
-  defdelegate send_message(webhook_url, message), to: HTTPClient
+  def send_message(webhook_url, message) do
+    webhook_url
+    |> IncomingWebhook.client()
+    |> IncomingWebhook.notify(message)
+  end
+
+  @spec client(String.t()) :: client
+  defdelegate client(webhook_url), to: IncomingWebhook
+
+  @spec notify(client, String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  defdelegate notify(client, message), to: IncomingWebhook
 end
