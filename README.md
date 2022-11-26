@@ -33,6 +33,14 @@ webhook_url = "https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123
 message = "Hello World!!"
 ExMicrosoftTeams.send_message(webhook_url, message)
 ```
+or
+
+```elixir
+"https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123/456" 
+|>ExMicrosoftTeams.client()
+|>ExMicrosoftTeams.notify("Hello World!!")
+`
+```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
