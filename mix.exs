@@ -53,27 +53,4 @@ defmodule ExMicrosoftTeams.MixProject do
       main: "readme"
     ]
   end
-
-  defp description do
-    """
-    Elixir library for integration with Microsoft Teams Incoming Webhook.
-    """
-  end
-
-  defp package do
-    # These are the default files included in the package
-    [
-      name: :ex_microsoft_teams,
-      maintainers: ["Gabriel Pereira"],
-      licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/gabrielpedepera/ex_microsoft_teams"}
-    ]
-  end
-
-  defp docs do
-    [
-      extras: ["README.md"],
-      main: "readme"
-    ]
-  end
 end
