@@ -1,12 +1,14 @@
 defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
-  def client(webhook_url) do
+  def client(webhook_url, opts \\ []) do
+    adapter = Keyword.get(opts, :adapter, Tesla.Adapter.Hackney)
+
     middleware = [
       {Tesla.Middleware.BaseUrl, webhook_url},
       {Tesla.Middleware.Headers, [{"Content-Type", "application/json"}]},
       {Tesla.Middleware.JSON, engine: Jason, engine_opts: [keys: :atoms]}
     ]
 
-    Tesla.client(middleware)
+    Tesla.client(middleware, adapter)
   end
 
   def notify(_client, nil) do
