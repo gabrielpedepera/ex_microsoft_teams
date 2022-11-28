@@ -37,9 +37,8 @@ or
 
 ```elixir
 "https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123/456" 
-|>ExMicrosoftTeams.client()
-|>ExMicrosoftTeams.notify("Hello World!!")
-`
+|> ExMicrosoftTeams.client()
+|> ExMicrosoftTeams.notify("Hello World!!")
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
