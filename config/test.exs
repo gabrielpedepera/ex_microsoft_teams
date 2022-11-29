@@ -1,3 +1,3 @@
 import Config
 
-config :tesla, adapter: Tesla.Mock
+config :tesla, adapter: Tesla.MockAdapter
