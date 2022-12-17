@@ -19,16 +19,17 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
           {:ok, %Tesla.Env{status: 200, body: "1"}}
       end)
 
-      client = IncomingWebhook.client(webhook_url, adapter: Tesla.MockAdapter)
+      client = IncomingWebhook.client(webhook_url)
 
       assert {:ok, %Tesla.Env{body: "1"}} = Tesla.post(client, "/", "")
     end
+  end
 
-    test "returns a client with the adapter set properly", %{webhook_url: webhook_url} do
-      adapter = Tesla.Adapter.Mint
-      client = IncomingWebhook.client(webhook_url, adapter: adapter)
+  describe "notify/2" do
+    test "returns error when message is nil", %{webhook_url: webhook_url} do
+      client = IncomingWebhook.client(webhook_url)
 
-      assert adapter == Tesla.Client.adapter(client)
+      assert {:error, "Message is required."} = IncomingWebhook.notify(client, nil)
     end
   end
 end
