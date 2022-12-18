@@ -5,6 +5,8 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
 
   alias ExMicrosoftTeams.Impl.IncomingWebhook
 
+  setup :verify_on_exit!
+
   setup do
     webhook_url = "https://microsoft-teams.com/incoming-webhook/42/"
 
@@ -12,6 +14,12 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
   end
 
   describe "client/2" do
+    setup do
+      on_exit(fn ->
+        Application.put_env(:ex_microsoft_teams, :tesla, http_adapter: Tesla.MockAdapter)
+      end)
+    end
+
     test "returns a client with the webhook URL set properly", %{webhook_url: webhook_url} do
       Tesla.MockAdapter
       |> expect(:call, fn
@@ -22,6 +30,15 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
       client = IncomingWebhook.client(webhook_url)
 
       assert {:ok, %Tesla.Env{body: "1"}} = Tesla.post(client, "/", "")
+    end
+
+    test "returns a client accordingly the config", %{webhook_url: webhook_url} do
+      adapter = Tesla.Adapter.Mint
+      Application.put_env(:ex_microsoft_teams, :tesla, http_adapter: adapter)
+
+      client = IncomingWebhook.client(webhook_url)
+
+      assert adapter == Tesla.Client.adapter(client)
     end
   end
 

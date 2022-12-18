@@ -1,6 +1,4 @@
 defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
-  @adapter Application.compile_env(:ex_microsoft_teams, :tesla)[:http_adapter]
-
   def client(webhook_url) do
     middleware = [
       {Tesla.Middleware.BaseUrl, webhook_url},
@@ -8,7 +6,7 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
       {Tesla.Middleware.JSON, engine: Jason, engine_opts: [keys: :atoms]}
     ]
 
-    Tesla.client(middleware, @adapter)
+    Tesla.client(middleware, adapter())
   end
 
   def notify(_client, nil) do
@@ -36,5 +34,9 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
     webhook_url
     |> client()
     |> notify(message)
+  end
+
+  defp adapter do
+    Application.get_env(:ex_microsoft_teams, :tesla)[:http_adapter]
   end
 end
