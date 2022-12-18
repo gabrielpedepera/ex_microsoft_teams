@@ -26,12 +26,13 @@ end
     3. Click Configure and provide a name for your webhook.
     4. Copy the URL which appears and click "OK".
 
-### Send a message
+### Sending a message
 
 ```elixir
 webhook_url = "https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123/456" 
 message = "Hello World!!"
 ExMicrosoftTeams.send_message(webhook_url, message)
+=> {:ok, "Message sent!"}
 ```
 or
 
@@ -39,6 +40,65 @@ or
 "https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123/456" 
 |> ExMicrosoftTeams.client()
 |> ExMicrosoftTeams.notify("Hello World!!")
+=> {:ok, "Message sent!"}
+```
+
+## Testing
+
+### Using [Mox](https://github.com/dashbitco/mox)
+
+```elixir
+# config/config.exs 
+config :my_app, :microsoft_teams_client, ExMicrosoftTeams
+```
+
+```elixir
+# microsoft_teams_client.ex, the main context we chose to call this function from
+defmodule MicrosoftTeamsClient do
+  def send_message(message) do
+    microsoft_teams_client().send_message(webhook_url(), message)
+  end
+
+  defp webhook_url, do: "https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123/456"
+
+  defp microsoft_teams_client do
+    Application.compile_env(:my_app, :microsoft_teams_client)
+  end
+end
+```
+
+```elixir
+# In your test/test_helper.exs
+Mox.defmock(ExMicrosoftTeamsMock, for: ExMicrosoftTeams.Base) # <- Add this
+Application.put_env(:my_app, :microsoft_teams_client, ExMicrosoftTeamsMock) # <- Add this
+
+ExUnit.start()
+```
+
+```elixir
+# test/microsoft_teams_client_test.exs
+defmodule MicrosoftTeamsClientTest do
+  use ExUnit.Case
+
+  import Mox
+
+  setup :verify_on_exit!
+
+  describe "send_message/1" do
+    test "send message with the correct webhook_url and message" do
+      expect(ExMicrosoftTeamsMock, :send_message, fn webhook_url, message ->
+        # here we can assert on the arguments that get passed to the function
+        assert webhook_url == "https://acme.webhook.office.com/webhookb2/abc/IncomingWebhook/123/456"
+        assert message == "Hello World!"
+
+        # here we decide what the mock returns
+        {:ok, "Message sent!"}
+      end)
+
+      assert {:ok, _} = ExMicrosoftTeams.send_message("Hello World!")
+    end
+  end
+end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)

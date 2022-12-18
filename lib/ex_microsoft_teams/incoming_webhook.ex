@@ -19,8 +19,8 @@ defmodule ExMicrosoftTeams.IncomingWebhook do
 
   def notify(client, message) do
     case Tesla.post(client, "", %{text: message}) do
-      {:ok, %Tesla.Env{body: body}} ->
-        {:ok, body}
+      {:ok, %Tesla.Env{body: _body}} ->
+        {:ok, "Message sent!"}
 
       {:error, %Tesla.Env{body: body}} ->
         {:error, body}

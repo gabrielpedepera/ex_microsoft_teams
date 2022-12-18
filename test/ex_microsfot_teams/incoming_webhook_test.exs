@@ -62,7 +62,7 @@ defmodule ExMicrosoftTeams.IncomingWebhookTest do
 
       client = IncomingWebhook.client(webhook_url)
 
-      assert {:ok, "1"} = IncomingWebhook.notify(client, "The Message")
+      assert {:ok, "Message sent!"} = IncomingWebhook.notify(client, "The Message")
     end
 
     test "returns error when request fails", %{webhook_url: webhook_url} do
@@ -102,7 +102,7 @@ defmodule ExMicrosoftTeams.IncomingWebhookTest do
           {:ok, %Tesla.Env{status: 200, body: "1"}}
       end)
 
-      assert {:ok, "1"} = IncomingWebhook.send_message(webhook_url, "The Message")
+      assert {:ok, "Message sent!"} = IncomingWebhook.send_message(webhook_url, "The Message")
     end
 
     test "returns error when request fails", %{webhook_url: webhook_url} do
