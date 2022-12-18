@@ -1,3 +1,3 @@
 import Config
 
-config :ex_microsoft_teams, :tesla, adapter: Tesla.MockAdapter
+config :ex_microsoft_teams, :tesla, http_adapter: Tesla.MockAdapter

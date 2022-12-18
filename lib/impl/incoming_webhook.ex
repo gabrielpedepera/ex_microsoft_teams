@@ -1,5 +1,5 @@
 defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
-  @adapter Application.compile_env(:ex_microsoft_teams, :tesla)[:adapter]
+  @adapter Application.compile_env(:ex_microsoft_teams, :tesla)[:http_adapter]
 
   def client(webhook_url) do
     middleware = [
