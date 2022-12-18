@@ -1,4 +1,4 @@
-defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
+defmodule ExMicrosoftTeams.IncomingWebhook do
   def client(webhook_url) do
     middleware = [
       {Tesla.Middleware.BaseUrl, webhook_url},

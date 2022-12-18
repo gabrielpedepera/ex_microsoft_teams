@@ -1,9 +1,9 @@
-defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
+defmodule ExMicrosoftTeams.IncomingWebhookTest do
   use ExUnit.Case
 
   import Mox
 
-  alias ExMicrosoftTeams.Impl.IncomingWebhook
+  alias ExMicrosoftTeams.IncomingWebhook
 
   setup :verify_on_exit!
 
