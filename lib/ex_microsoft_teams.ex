@@ -17,11 +17,7 @@ defmodule ExMicrosoftTeams do
 
   """
   @spec send_message(String.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
-  def send_message(webhook_url, message) do
-    webhook_url
-    |> IncomingWebhook.client()
-    |> IncomingWebhook.notify(message)
-  end
+  defdelegate send_message(webhook_url, message), to: IncomingWebhook
 
   @doc """
   Dynamically build client from a incoming webhook_url.

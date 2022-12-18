@@ -12,11 +12,11 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
   end
 
   def notify(_client, nil) do
-    {:error, "Message is required"}
+    {:error, "message is required"}
   end
 
   def notify(nil, _message) do
-    {:error, "Client is required"}
+    {:error, "client is required"}
   end
 
   def notify(client, message) do
@@ -30,5 +30,11 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhook do
       {:error, reason} ->
         {:error, inspect(reason)}
     end
+  end
+
+  def send_message(webhook_url, message) do
+    webhook_url
+    |> client()
+    |> notify(message)
   end
 end

@@ -27,16 +27,16 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
 
   describe "notify/2" do
     test "returns error when client is nil" do
-      assert {:error, "Client is required"} = IncomingWebhook.notify(nil, "The Message")
+      assert {:error, "client is required"} = IncomingWebhook.notify(nil, "The Message")
     end
 
     test "returns error when message is nil", %{webhook_url: webhook_url} do
       client = IncomingWebhook.client(webhook_url)
 
-      assert {:error, "Message is required"} = IncomingWebhook.notify(client, nil)
+      assert {:error, "message is required"} = IncomingWebhook.notify(client, nil)
     end
 
-   test "returns a ok when the request is successfully", %{webhook_url: webhook_url} do
+    test "returns a ok when the request is successfully", %{webhook_url: webhook_url} do
       Tesla.MockAdapter
       |> expect(:call, fn
         %{url: ^webhook_url}, _opts ->
@@ -70,6 +70,43 @@ defmodule ExMicrosoftTeams.Impl.IncomingWebhookTest do
       client = IncomingWebhook.client(webhook_url)
 
       assert {:error, "\"Unexpected Error\""} = IncomingWebhook.notify(client, "The Message")
+    end
+  end
+
+  describe "send_message/2" do
+    test "returns error when message is nil", %{webhook_url: webhook_url} do
+      assert {:error, "message is required"} = IncomingWebhook.send_message(webhook_url, nil)
+    end
+
+    test "returns a ok when the request is successfully", %{webhook_url: webhook_url} do
+      Tesla.MockAdapter
+      |> expect(:call, fn
+        %{url: ^webhook_url}, _opts ->
+          {:ok, %Tesla.Env{status: 200, body: "1"}}
+      end)
+
+      assert {:ok, "1"} = IncomingWebhook.send_message(webhook_url, "The Message")
+    end
+
+    test "returns error when request fails", %{webhook_url: webhook_url} do
+      Tesla.MockAdapter
+      |> expect(:call, fn
+        %{url: ^webhook_url}, _opts ->
+          {:error, %Tesla.Env{status: 400, body: "Request failed"}}
+      end)
+
+      assert {:error, "Request failed"} = IncomingWebhook.send_message(webhook_url, "The Message")
+    end
+
+    test "returns error when request does not have any response", %{webhook_url: webhook_url} do
+      Tesla.MockAdapter
+      |> expect(:call, fn
+        %{url: ^webhook_url}, _opts ->
+          {:error, "Unexpected Error"}
+      end)
+
+      assert {:error, "\"Unexpected Error\""} =
+               IncomingWebhook.send_message(webhook_url, "The Message")
     end
   end
 end
